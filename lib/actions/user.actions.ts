@@ -58,4 +58,3 @@ export const getDocumentUsers = async ({
     console.log(`Error fetching document users: ${error}`);
   }
 };
-
