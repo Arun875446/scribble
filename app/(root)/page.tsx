@@ -180,6 +180,7 @@ import AddDocumentBtn from "@/components/AddDocumentBtn";
 import { DeleteModal } from "@/components/DeleteModal";
 import Header from "@/components/Header";
 import Notifications from "@/components/Notifications";
+import { Button } from "@/components/ui/button";
 import { getDocuments } from "@/lib/actions/room.actions";
 import { dateConverter } from "@/lib/utils";
 import { SignedIn, UserButton } from "@clerk/nextjs";
@@ -190,19 +191,11 @@ import { redirect } from "next/navigation";
 
 const Home = async () => {
   const clerkUser = await currentUser();
-  if (!clerkUser) {
-    redirect("/sign-in");
-    return null; // Ensure the function stops execution here
-  }
+  if (!clerkUser) redirect("/sign-in");
 
-  const emailAddress = clerkUser.emailAddresses?.[0]?.emailAddress;
-  if (!emailAddress) {
-    console.error("No email address found for the current user.");
-    redirect("/sign-in");
-    return null;
-  }
-
-  const roomDocuments = await getDocuments(emailAddress);
+  const roomDocuments = await getDocuments(
+    clerkUser.emailAddresses[0].emailAddress
+  );
 
   return (
     <main className="home-container">
@@ -219,7 +212,10 @@ const Home = async () => {
         <div className="document-list-container">
           <div className="document-list-title">
             <h3 className="text-28-semibold">All documents</h3>
-            <AddDocumentBtn userId={clerkUser.id} email={emailAddress} />
+            <AddDocumentBtn
+              userId={clerkUser.id}
+              email={clerkUser.emailAddresses[0].emailAddress}
+            />
           </div>
           <ul className="document-ul">
             {roomDocuments.data.map(({ id, metadata, createdAt }: any) => (
@@ -257,7 +253,11 @@ const Home = async () => {
             height={40}
             className="mx-auto"
           />
-          <AddDocumentBtn userId={clerkUser.id} email={emailAddress} />
+
+          <AddDocumentBtn
+            userId={clerkUser.id}
+            email={clerkUser.emailAddresses[0].emailAddress}
+          />
         </div>
       )}
     </main>
