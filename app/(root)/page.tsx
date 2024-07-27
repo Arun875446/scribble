@@ -180,6 +180,7 @@ import AddDocumentBtn from "@/components/AddDocumentBtn";
 import { DeleteModal } from "@/components/DeleteModal";
 import Header from "@/components/Header";
 import Notifications from "@/components/Notifications";
+import { Button } from "@/components/ui/button";
 import { getDocuments } from "@/lib/actions/room.actions";
 import { dateConverter } from "@/lib/utils";
 import { SignedIn, UserButton } from "@clerk/nextjs";
@@ -190,10 +191,7 @@ import { redirect } from "next/navigation";
 
 const Home = async () => {
   const clerkUser = await currentUser();
-  if (!clerkUser) {
-    redirect("/sign-in");
-    return null; // Ensure the function stops execution here
-  }
+  if (!clerkUser) redirect("/sign-in");
 
   const roomDocuments = await getDocuments(
     clerkUser.emailAddresses[0].emailAddress
@@ -255,6 +253,7 @@ const Home = async () => {
             height={40}
             className="mx-auto"
           />
+
           <AddDocumentBtn
             userId={clerkUser.id}
             email={clerkUser.emailAddresses[0].emailAddress}

@@ -50,35 +50,18 @@ import { getClerkUsers } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
-interface SearchParamProps {
-  params: {
-    id: string;
-  };
-}
-
-interface User {
-  email: string;
-  [key: string]: any; // Other properties of the User object
-}
-
 const Document = async ({ params: { id } }: SearchParamProps) => {
   const clerkUser = await currentUser();
-  if (!clerkUser) {
-    redirect("/sign-in");
-    return null; // Ensure we stop further execution
-  }
+  if (!clerkUser) redirect("/sign-in");
 
   const room = await getDocument({
     roomId: id,
     userId: clerkUser.emailAddresses[0].emailAddress,
   });
 
-  if (!room) {
-    redirect("/");
-    return null; // Ensure we stop further execution
-  }
+  if (!room) redirect("/");
 
-  const userIds = Object.keys(room.usersAccesses || {});
+  const userIds = Object.keys(room.usersAccesses);
   const users = await getClerkUsers({ userIds });
 
   const usersData = users.map((user: User) => ({
