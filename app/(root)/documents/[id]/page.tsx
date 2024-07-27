@@ -65,7 +65,7 @@ const Document = async ({ params: { id } }: SearchParamProps) => {
   const users = await getClerkUsers({ userIds });
 
   const usersData = users.map((user: User) => {
-    const userEmail = user.email;
+    const userEmail = user?.email;
     const userAccesses = room.usersAccesses[userEmail] || [];
     return {
       ...user,
